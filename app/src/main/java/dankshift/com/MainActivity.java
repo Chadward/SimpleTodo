@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         readItems();
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_List_item_1, items);
+        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         LvItems = (ListView) findViewById(R.id.LvItems);
         LvItems.setAdapter(itemsAdapter);
 
@@ -37,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
         //items.add("First item");
         //items.add("Second item");
 
-        setupViewListener();
+        setupListViewListener();
     }
 
     public void onAddItem(View v) {
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
+        EditText etNewItem = (EditText) findViewById(R.id.editText);
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("MainActivity", "Item removed from List: " + position);
-                item.remove(position);
+                items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
                 writeItems();
                 return true;
@@ -70,10 +70,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readItems() {
-        items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
-    } catch (IOException e) {
-        Log.e("MainActivity", "error reading file", e);
-        items = new ArrayList<>();
+        try {
+            items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+        }
+        catch (IOException e) {
+            Log.e("MainActivity", "error reading file", e);
+            items = new ArrayList<>();
+        }
     }
 
     private void writeItems() {
@@ -82,5 +85,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.e("Mainctivity", "Error writing file", e);
         }
+        readItems();
     }
 }
